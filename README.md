@@ -1,8 +1,6 @@
 # order-flow-signal
 Order flow vs price dislocation signal (TSLA intraday)
 
-# Order Flow vs Price Dislocation Signal
-
 ## Overview
 This project studies the relationship between short-term order flow and price movement.
 The goal is to detect situations where aggressive buying or selling pressure is not yet reflected in price.
@@ -16,36 +14,37 @@ Similarly, strong selling pressure without price decline may indicate latent dow
 
 ## Data
 - Instrument: TSLA
-- Frequency: Intraday (tick / 1s / 1min bars)
+- Frequency: Intraday (1-minute bars)
+- Source: Yahoo Finance (yfinance)
 - Fields used:
-  - Trade price
-  - Trade size
-  - Bid / Ask
-  - Mid price
+  - Open, High, Low, Close
+  - Volume
+  - Mid price (constructed)
 
 ## Methodology
+- Signed order flow over rolling window
+- Midprice log return
+- Z-score normalization
+- Signal = Flow Z-score – Price Move Z-score
 
 ### Trade Classification
-Trades are classified using the Lee–Ready algorithm:
-
-- Buy-initiated if trade price > mid price
-- Sell-initiated if trade price < mid price
+Trades are classified using a tick-rule proxy for the Lee–Ready algorithm:
+- Buy-initiated if price increases
+- Sell-initiated if price decreases
 
 ### Signal Construction
 We construct:
-
-- Net Order Flow  
-- Realized Price Movement  
+- Net Order Flow
+- Realized Price Movement
 
 Final signal:
-
 Sₜ = Normalized(Flowₜ) − Normalized(ΔPₜ)
 
 ## Results
 Key findings:
-- Positive signal values tend to be followed by positive returns
-- Negative signal values tend to be followed by negative returns
-- Predictive power is modest but statistically consistent
+- The signal shows weak but non-zero predictive power (IC ≈ -0.007 over 10-minute horizon)
+- Return monotonicity across signal deciles is observed
+- A toy long/short strategy suggests the signal is not directly tradable but contains information
 
 ## Repository Structure
 
